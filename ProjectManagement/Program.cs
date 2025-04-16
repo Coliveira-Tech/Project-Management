@@ -1,0 +1,41 @@
+using Microsoft.EntityFrameworkCore;
+using ProjectManagement.Api.Extensions;
+using ProjectManagement.Api.Infra.Data;
+using ProjectManagement.Api.Interfaces;
+using System.Text.Json.Serialization;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+builder.Services.AddMvc()
+                .AddJsonOptions(x =>
+                {
+                    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                    x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
+                });
+
+string? conn = builder.Configuration.GetConnectionString("ProjectManagementDatabase");
+builder.Services.AddDbContext<Context>(options => options.UseSqlServer(conn));
+builder.Services.AddControllers();
+builder.Services.AddOpenApi();
+builder.Services.AddHealthChecks();
+
+var app = builder.Build();
+
+app.MapHealthChecks("/health");
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.ApplyMigrations();
+}
+
+bool isInContainer = builder.Configuration.GetValue("DOTNET_RUNNING_IN_CONTAINER", false);
+
+if (!isInContainer)
+    app.UseHttpsRedirection();
+
+app.UseAuthorization();
+app.MapControllers();
+app.Run();

@@ -1,0 +1,19 @@
+﻿namespace ProjectManagement.Domain.Entities
+{
+    public class TaskHistory
+    {
+        public Guid Id { get; set; }
+        public DateTime Timestamp { get; set; } = DateTime.Now;
+        public string Field { get; set; } = string.Empty;
+        public string OldValue { get; set; } = string.Empty;
+        public string NewValue { get; set; } = string.Empty;
+
+        // Foreign key
+        public required Guid TaskId { get; set; }
+        public required Guid UserId { get; set; }
+
+        // Navigation properties
+        public virtual Task Task { get; set; } = new Task();
+        public virtual User User { get; set; } = new User();
+    }
+}
