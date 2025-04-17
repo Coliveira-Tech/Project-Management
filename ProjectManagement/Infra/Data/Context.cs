@@ -25,7 +25,10 @@ namespace ProjectManagement.Api.Infra.Data
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
-        //public DbSet<Customer> Customers { get; set; }
-      
+        public DbSet<User> Users { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<Domain.Entities.Task> Tasks { get; set; }
+        public DbSet<TaskHistory> TaskHistories { get; set; }
+        public DbSet<Comment> Comments { get; set; }
     }
 }

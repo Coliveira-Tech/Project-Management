@@ -1,8 +1,9 @@
-﻿namespace ProjectManagement.Domain.Entities
+﻿using ProjectManagement.Domain.Models;
+
+namespace ProjectManagement.Domain.Entities
 {
-    public class TaskHistory
+    public class TaskHistory : BaseEntity
     {
-        public Guid Id { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.Now;
         public string Field { get; set; } = string.Empty;
         public string OldValue { get; set; } = string.Empty;

@@ -1,8 +1,9 @@
-﻿namespace ProjectManagement.Domain.Entities
+﻿using ProjectManagement.Domain.Models;
+
+namespace ProjectManagement.Domain.Entities
 {
-    public class Comment
+    public class Comment : BaseEntity
     {
-        public Guid Id { get; set; }
         public string Content { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 

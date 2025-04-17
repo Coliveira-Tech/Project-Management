@@ -1,8 +1,9 @@
-﻿namespace ProjectManagement.Domain.Entities
+﻿using ProjectManagement.Domain.Models;
+
+namespace ProjectManagement.Domain.Entities
 {
-    public class Task
+    public class Task : BaseEntity
     {
-        public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public DateTime DueDate { get; set; }
@@ -19,5 +20,6 @@
         public virtual Project Project { get; set; } = new Project();
         public virtual User AssignedUser { get; set; } = new User();
         public virtual ICollection<Comment> Comments { get; set; } = [];
+        public virtual ICollection<TaskHistory> TaskHistory { get; set; } = [];
     }
 }

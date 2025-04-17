@@ -1,8 +1,9 @@
-﻿namespace ProjectManagement.Domain.Entities
+﻿using ProjectManagement.Domain.Models;
+
+namespace ProjectManagement.Domain.Entities
 {
-    public class Project
+    public class Project : BaseEntity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
 
