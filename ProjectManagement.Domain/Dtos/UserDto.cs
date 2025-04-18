@@ -1,4 +1,5 @@
 ﻿using ProjectManagement.Domain.Entities;
+using ProjectManagement.Domain.Enums;
 
 namespace ProjectManagement.Domain.Dtos
 {
@@ -19,6 +20,6 @@ namespace ProjectManagement.Domain.Dtos
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public string Role { get; set; } = string.Empty;
+        public UserRole Role { get; set; } = UserRole.Guest;
     }
 }

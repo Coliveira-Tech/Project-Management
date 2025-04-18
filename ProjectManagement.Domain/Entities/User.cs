@@ -1,4 +1,5 @@
-﻿using ProjectManagement.Domain.Models;
+﻿using ProjectManagement.Domain.Enums;
+using ProjectManagement.Domain.Models;
 
 namespace ProjectManagement.Domain.Entities
 {
@@ -7,7 +8,7 @@ namespace ProjectManagement.Domain.Entities
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public string Role { get; set; } = string.Empty;
+        public UserRole Role { get; set; } = UserRole.Guest;
 
         // Navigation properties
         public virtual ICollection<Project> Projects { get; set; } = [];
