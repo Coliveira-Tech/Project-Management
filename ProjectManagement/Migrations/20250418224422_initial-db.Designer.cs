@@ -12,8 +12,8 @@ using ProjectManagement.Api.Infra.Data;
 namespace ProjectManagement.Api.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250417193334_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20250418224422_initial-db")]
+    partial class initialdb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -125,9 +125,7 @@ namespace ProjectManagement.Api.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Tasks");
-
-                    b.ToFunction("Task");
+                    b.ToTable("Task", (string)null);
                 });
 
             modelBuilder.Entity("ProjectManagement.Domain.Entities.TaskHistory", b =>

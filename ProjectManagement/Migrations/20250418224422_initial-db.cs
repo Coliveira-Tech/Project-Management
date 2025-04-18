@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProjectManagement.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class initialdb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -47,7 +47,7 @@ namespace ProjectManagement.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tasks",
+                name: "Task",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
@@ -63,15 +63,15 @@ namespace ProjectManagement.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tasks", x => x.Id);
+                    table.PrimaryKey("PK_Task", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Tasks_Project_ProjectId",
+                        name: "FK_Task_Project_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Project",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Tasks_User_AssignedUserId",
+                        name: "FK_Task_User_AssignedUserId",
                         column: x => x.AssignedUserId,
                         principalTable: "User",
                         principalColumn: "Id");
@@ -91,9 +91,9 @@ namespace ProjectManagement.Api.Migrations
                 {
                     table.PrimaryKey("PK_Comment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comment_Tasks_TaskId",
+                        name: "FK_Comment_Task_TaskId",
                         column: x => x.TaskId,
-                        principalTable: "Tasks",
+                        principalTable: "Task",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Comment_User_UserId",
@@ -119,9 +119,9 @@ namespace ProjectManagement.Api.Migrations
                 {
                     table.PrimaryKey("PK_TaskHistory", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TaskHistory_Tasks_TaskId",
+                        name: "FK_TaskHistory_Task_TaskId",
                         column: x => x.TaskId,
-                        principalTable: "Tasks",
+                        principalTable: "Task",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TaskHistory_User_UserId",
@@ -146,6 +146,16 @@ namespace ProjectManagement.Api.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Task_AssignedUserId",
+                table: "Task",
+                column: "AssignedUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Task_ProjectId",
+                table: "Task",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TaskHistory_TaskId",
                 table: "TaskHistory",
                 column: "TaskId");
@@ -154,16 +164,6 @@ namespace ProjectManagement.Api.Migrations
                 name: "IX_TaskHistory_UserId",
                 table: "TaskHistory",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tasks_AssignedUserId",
-                table: "Tasks",
-                column: "AssignedUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tasks_ProjectId",
-                table: "Tasks",
-                column: "ProjectId");
         }
 
         /// <inheritdoc />
@@ -176,7 +176,7 @@ namespace ProjectManagement.Api.Migrations
                 name: "TaskHistory");
 
             migrationBuilder.DropTable(
-                name: "Tasks");
+                name: "Task");
 
             migrationBuilder.DropTable(
                 name: "Project");

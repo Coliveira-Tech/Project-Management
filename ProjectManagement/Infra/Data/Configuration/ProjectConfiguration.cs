@@ -17,12 +17,13 @@ namespace ProjectManagement.Api.Infra.Data.Configuration
             builder.HasKey(e => e.Id);
 
             builder.Navigation(e => e.Tasks).AutoInclude();
+            builder.Navigation(e => e.Owner).AutoInclude();
+
             builder.HasMany(e => e.Tasks)
                 .WithOne(e => e.Project)
                 .HasForeignKey(e => e.ProjectId)
                 .IsRequired();
 
-            builder.Navigation(e => e.Owner).AutoInclude();
             builder.HasOne(e => e.Owner)
                 .WithMany(e => e.Projects)
                 .HasForeignKey(e => e.OwnerId)

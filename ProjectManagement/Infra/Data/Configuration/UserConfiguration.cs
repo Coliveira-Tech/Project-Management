@@ -19,9 +19,6 @@ namespace ProjectManagement.Api.Infra.Data.Configuration
 
             builder.HasKey(e => e.Id);
 
-            builder.Navigation(e => e.Projects).AutoInclude();
-            builder.Navigation(e => e.Tasks).AutoInclude();
-
             builder.HasMany(e => e.Projects)
                 .WithOne(e => e.Owner)
                 .HasForeignKey(e => e.OwnerId)

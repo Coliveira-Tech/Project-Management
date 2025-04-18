@@ -2,12 +2,14 @@ using Microsoft.EntityFrameworkCore;
 using ProjectManagement.Api.Extensions;
 using ProjectManagement.Api.Infra.Data;
 using ProjectManagement.Api.Interfaces;
+using ProjectManagement.Api.Services;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 builder.Services.AddMvc()
                 .AddJsonOptions(x =>

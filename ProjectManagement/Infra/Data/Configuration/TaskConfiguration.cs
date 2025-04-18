@@ -7,7 +7,7 @@ namespace ProjectManagement.Api.Infra.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Domain.Entities.Task> builder)
         {
-            builder.ToFunction("Task");
+            builder.ToTable("Task");
             builder.Property(e => e.Id).HasDefaultValueSql("NEWID()");
             builder.Property(e => e.Title).IsRequired();
             builder.Property(e => e.Description).IsRequired();

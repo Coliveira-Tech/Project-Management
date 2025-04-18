@@ -122,9 +122,7 @@ namespace ProjectManagement.Api.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Tasks");
-
-                    b.ToFunction("Task");
+                    b.ToTable("Task", (string)null);
                 });
 
             modelBuilder.Entity("ProjectManagement.Domain.Entities.TaskHistory", b =>
