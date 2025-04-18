@@ -5,13 +5,13 @@ namespace ProjectManagement.Api.Interfaces
 {
     public interface IRepository<T> where T : BaseEntity
     {
-        IEnumerable<T> Get(Expression<Func<T, bool>> predicate);
-        IEnumerable<T> GetAll();
-        void Insert(T entity);
-        void InsertRange(IEnumerable<T> entities);
-        void Update(T entity);
-        void Delete(T entity);
-        void DeleteRange(IEnumerable<T> entities);
+        Task<IEnumerable<T>> Get(Expression<Func<T, bool>> predicate);
+        Task<IEnumerable<T>> GetAll();
+        Task Insert(T entity);
+        Task InsertRange(IEnumerable<T> entities);
+        Task Update(T entity);
+        Task Delete(T entity);
+        Task DeleteRange(IEnumerable<T> entities);
         IQueryable<T> Table { get; }
     }
 }

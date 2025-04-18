@@ -11,6 +11,7 @@ namespace ProjectManagement.Api.Extensions
             {
                 StatusCodes.Status400BadRequest => new BadRequestObjectResult(response),
                 StatusCodes.Status404NotFound => new NotFoundObjectResult(response),
+                StatusCodes.Status422UnprocessableEntity => new UnprocessableEntityObjectResult(response),
                 _ => new OkObjectResult(response),
             };
         }

@@ -16,17 +16,16 @@ namespace ProjectManagement.Api.Services
         private readonly ILogger<TService> _logger = logger;
         private readonly IRepository<TEntity> _repository = repository;
 
-        public TResponse GetById(Guid id)
+        public virtual async Task<TResponse> GetBy(Expression<Func<TEntity, bool>> predicate)
         {
             TResponse response = new();
 
             try
             {
-                List<TEntity> result = _repository
-                                            .Get(x => x.Id == id)
-                                            .ToList();
+                IEnumerable<TEntity> result = await _repository
+                                                        .Get(predicate);
 
-                if (result.Count == 0)
+                if (!result.Any())
                 {
                     response.Message.Add($"{typeof(TEntity).Name} not found");
                     response.ErrorCode = StatusCodes.Status404NotFound;
@@ -36,9 +35,8 @@ namespace ProjectManagement.Api.Services
                 response.ListResponse.AddRange(result.ToDtoList<TEntity, TDto>());
                 response.IsSuccess = true;
 
-                _logger.LogInformation("Successfully retrieve {0} '{1}' | Method: {2}"
+                _logger.LogInformation("Successfully retrieve {0} | Method: {1}"
                                     , typeof(TEntity).Name
-                                    , id
                                     , GetType().Name);
             }
             catch (Exception ex)
@@ -51,17 +49,16 @@ namespace ProjectManagement.Api.Services
             return response;
         }
 
-        public TResponse GetAll()
+        public virtual async Task<TResponse> GetAll()
         {
             TResponse response = new();
 
             try
             {
-                List<TEntity> result = _repository
-                                            .GetAll()
-                                            .ToList();
+                IEnumerable<TEntity> result = await _repository
+                                                        .GetAll();
 
-                if (result.Count == 0)
+                if (!result.Any())
                 {
                     response.Message.Add($"{typeof(TEntity).Name} not found");
                     response.ErrorCode = StatusCodes.Status404NotFound;
@@ -86,7 +83,7 @@ namespace ProjectManagement.Api.Services
             return response;
         }
 
-        public TResponse Insert<TRequest>(TRequest request)
+        public virtual async Task<TResponse> Insert<TRequest>(TRequest request)
         {
             TResponse response = new();
 
@@ -96,7 +93,7 @@ namespace ProjectManagement.Api.Services
 
                 ArgumentNullException.ThrowIfNull(entity);
 
-                _repository.Insert(entity);
+                await _repository.Insert(entity);
 
                 TDto? dto = (TDto?)Activator.CreateInstance(typeof(TDto), entity);
                 
@@ -120,7 +117,7 @@ namespace ProjectManagement.Api.Services
             return response;
         }
 
-        public TResponse InsertRange<TRequest>(List<TRequest> request)
+        public virtual async Task<TResponse> InsertRange<TRequest>(List<TRequest> request)
         {
             TResponse response = new();
 
@@ -137,7 +134,7 @@ namespace ProjectManagement.Api.Services
 
                 ArgumentNullException.ThrowIfNull(entities);
 
-                _repository.InsertRange(entities);
+                await _repository.InsertRange(entities);
 
                 List<TDto> dtos = [];
 
@@ -167,15 +164,15 @@ namespace ProjectManagement.Api.Services
 
             return response;
         }
-
-        public TResponse Update<TRequest>(Guid id, TRequest request)
+        
+        public virtual async Task<TResponse> Update<TRequest>(Guid id, TRequest request)
         {
             TResponse response = new();
             try
             {
                 ArgumentNullException.ThrowIfNull(request);
 
-                TEntity? entity = _repository.Get(x => x.Id == id).FirstOrDefault();
+                TEntity? entity = (await _repository.Get(x => x.Id == id)).FirstOrDefault();
 
                 if (entity == null)
                 {
@@ -186,13 +183,19 @@ namespace ProjectManagement.Api.Services
 
                 request.GetType().GetProperties().ToList().ForEach(prop =>
                 {
-                    PropertyInfo? property = entity.GetType().GetProperty(prop.Name);
+                    object? value = prop.GetValue(request);
+                    PropertyInfo? property = entity
+                                                .GetType()
+                                                .GetProperty(prop.Name);
 
-                    if(property != null && property.PropertyType.Namespace != "System.Collections.Generic")
-                        property.SetValue(entity, prop.GetValue(request));
+                    //if(property != null && property.PropertyType.Namespace != "System.Collections.Generic")
+                        //property?.SetValue(entity, prop.GetValue(request));
+
+                    if (IsPropertyValid(property, value))
+                        property?.SetValue(entity, value);
                 });
 
-                _repository.Update(entity);
+                await _repository.Update(entity);
                 
                 TDto? dto = (TDto?)Activator.CreateInstance(typeof(TDto), entity);
 
@@ -215,14 +218,14 @@ namespace ProjectManagement.Api.Services
 
             return response;
         }
-        public TResponse Delete(Guid Id)
+
+        public virtual async Task<TResponse> Delete(Guid Id)
         {
             TResponse response = new();
 
             try
             {
-                TEntity? entity = _repository
-                                    .Get(x => x.Id == Id)
+                TEntity? entity = (await _repository.Get(x => x.Id == Id))
                                     .FirstOrDefault();
 
                 if (entity == null)
@@ -232,7 +235,7 @@ namespace ProjectManagement.Api.Services
                     return response;
                 }
 
-                _repository.Delete(entity);
+                await _repository.Delete(entity);
 
                 TDto? dto = (TDto?)Activator.CreateInstance(typeof(TDto), entity);
 
@@ -256,13 +259,50 @@ namespace ProjectManagement.Api.Services
             return response;
         }
 
-        public TResponse DeleteRange(Expression<Func<TEntity, bool>> predicate)
+        public virtual async Task<TResponse> Delete(TEntity? entity)
         {
             TResponse response = new();
 
             try
             {
-                IEnumerable<TEntity>? entities = _repository.Get(predicate);
+                if (entity == null)
+                {
+                    response.Message.Add($"{typeof(TEntity).Name} not found");
+                    response.ErrorCode = StatusCodes.Status404NotFound;
+                    return response;
+                }
+
+                await _repository.Delete(entity);
+
+                TDto? dto = (TDto?)Activator.CreateInstance(typeof(TDto), entity);
+
+                ArgumentNullException.ThrowIfNull(dto);
+
+                response.ListResponse.Add(dto);
+                response.IsSuccess = true;
+
+                _logger.LogInformation("Successfully delete {0} {1} | Method: {2}"
+                                    , typeof(TEntity).Name
+                                    , entity.Id
+                                    , GetType().Name);
+            }
+            catch (Exception ex)
+            {
+                response.Message.Add($"Error trying to delete {typeof(TEntity).Name}");
+                response.Message.Add(ex.Message);
+                response.ErrorCode = StatusCodes.Status400BadRequest;
+            }
+
+            return response;
+        }
+
+        public virtual async Task<TResponse> DeleteRange(Expression<Func<TEntity, bool>> predicate)
+        {
+            TResponse response = new();
+
+            try
+            {
+                IEnumerable<TEntity>? entities = await _repository.Get(predicate);
 
                 if (entities == null)
                 {
@@ -271,7 +311,7 @@ namespace ProjectManagement.Api.Services
                     return response;
                 }
 
-                _repository.DeleteRange(entities);
+                await _repository.DeleteRange(entities);
 
                 foreach (var entity in entities)
                 {
@@ -295,6 +335,18 @@ namespace ProjectManagement.Api.Services
             }
 
             return response;
+        }
+
+        private static bool IsPropertyValid(PropertyInfo? property, object? value)
+        {
+            if (property == null
+            || property.PropertyType.IsGenericType
+            || !property.PropertyType.IsValueType
+            || value == null
+            || value == default)
+                return false;
+
+            return true;
         }
     }
 }

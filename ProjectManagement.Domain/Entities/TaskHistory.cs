@@ -10,8 +10,8 @@ namespace ProjectManagement.Domain.Entities
         public string NewValue { get; set; } = string.Empty;
 
         // Foreign key
-        public required Guid TaskId { get; set; }
-        public required Guid UserId { get; set; }
+        public Guid TaskId { get; set; }
+        public Guid UserId { get; set; }
 
         // Navigation properties
         public virtual Task Task { get; set; } = new Task();

@@ -11,7 +11,7 @@ namespace ProjectManagement.Domain.Entities
         public Guid OwnerId { get; set; }
        
         // Navigation properties
-        public virtual ICollection<Task> Tasks { get; set; } = [];
+        public virtual List<Task> Tasks { get; } = [];
         public virtual User Owner { get; set; } = new User();
     }
 }

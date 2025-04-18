@@ -12,44 +12,44 @@ namespace ProjectManagement.Api.Infra.Data
         private readonly Context context = context;
         private DbSet<T> entity = context.Set<T>();
 
-        public IEnumerable<T> Get(Expression<Func<T, bool>> predicate)
+        public async Task<IEnumerable<T>> Get(Expression<Func<T, bool>> predicate)
         {
-            return entity.Where(predicate).ToList();
+            return await entity.Where(predicate).ToListAsync();
         }
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> GetAll()
         {
-            return entity.ToList();
+            return await entity.ToListAsync();
         }
         
-        public void Insert(T entity)
+        public async Task Insert(T entity)
         {
             ArgumentNullException.ThrowIfNull(entity);
             this.entity.Add(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
-        public void InsertRange(IEnumerable<T> entities)
+        public async Task InsertRange(IEnumerable<T> entities)
         {
             ArgumentNullException.ThrowIfNull(entities);
             this.entity.AddRange(entities);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
-        public void Update(T entity)
+        public async Task Update(T entity)
         {
             ArgumentNullException.ThrowIfNull(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
-        public void Delete(T entity)
+        public async Task Delete(T entity)
         {
             ArgumentNullException.ThrowIfNull(entity);
             this.entity.Remove(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public void DeleteRange(IEnumerable<T> entities)
+        public async Task DeleteRange(IEnumerable<T> entities)
         {
             ArgumentNullException.ThrowIfNull(entity);
             this.entity.RemoveRange(entities);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         public virtual IQueryable<T> Table
