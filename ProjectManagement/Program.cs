@@ -3,7 +3,6 @@ using ProjectManagement.Api.Extensions;
 using ProjectManagement.Api.Infra.Data;
 using ProjectManagement.Api.Interfaces;
 using ProjectManagement.Api.Services;
-using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,7 +30,7 @@ app.MapHealthChecks("/health");
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "Swagger"));
     app.ApplyMigrations();
 }
 

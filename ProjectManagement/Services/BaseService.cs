@@ -188,10 +188,7 @@ namespace ProjectManagement.Api.Services
                                                 .GetType()
                                                 .GetProperty(prop.Name);
 
-                    //if(property != null && property.PropertyType.Namespace != "System.Collections.Generic")
-                        //property?.SetValue(entity, prop.GetValue(request));
-
-                    if (IsPropertyValid(property, value))
+                    if (CanSetValue(property, value))
                         property?.SetValue(entity, value);
                 });
 
@@ -337,13 +334,27 @@ namespace ProjectManagement.Api.Services
             return response;
         }
 
-        private static bool IsPropertyValid(PropertyInfo? property, object? value)
+        private static bool CanSetValue(PropertyInfo? property, object? value)
         {
-            if (property == null
-            || property.PropertyType.IsGenericType
-            || !property.PropertyType.IsValueType
-            || value == null
-            || value == default)
+            bool stringIsNullOrEmpty = false;
+            bool guidIsNullOrDefault = false;
+
+            if(property == null || value == null)
+                return false;
+
+            switch (value.GetType().Name)
+            {
+                case "String":
+                    stringIsNullOrEmpty = string.IsNullOrEmpty(value?.ToString());
+                    break;
+                case "Guid":
+                    guidIsNullOrDefault = Guid.Empty == (Guid)value;
+                    break;
+                default:
+                    break;
+            }
+
+            if (stringIsNullOrEmpty || guidIsNullOrDefault)
                 return false;
 
             return true;

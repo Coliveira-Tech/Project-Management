@@ -15,7 +15,7 @@
       },
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "scalar/v1",
+      "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7188;http://localhost:5103"
     },
     "Container (Dockerfile)": {
