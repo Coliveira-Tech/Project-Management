@@ -9,6 +9,9 @@ namespace ProjectManagement.Domain.Dtos
 
         public UserDto(User entity)
         {
+            if (entity == null)
+                return;
+
             Id = entity.Id;
             Name = entity.Name;
             Email = entity.Email;

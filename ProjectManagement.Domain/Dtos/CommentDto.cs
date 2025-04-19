@@ -7,6 +7,9 @@ namespace ProjectManagement.Domain.Dtos
         public CommentDto() { }
         public CommentDto(Comment entity)
         {
+            if (entity == null)
+                return;
+
             Id = entity.Id;
             Content = entity.Content;
             CreatedAt = entity.CreatedAt;

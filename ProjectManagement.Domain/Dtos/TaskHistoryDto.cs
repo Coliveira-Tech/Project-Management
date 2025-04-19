@@ -7,6 +7,9 @@ namespace ProjectManagement.Domain.Dtos
         public TaskHistoryDto() { }
         public TaskHistoryDto(TaskHistory entity)
         {
+            if (entity == null)
+                return;
+
             Id = entity.Id;
             Timestamp = entity.Timestamp;
             Field = entity.Field;

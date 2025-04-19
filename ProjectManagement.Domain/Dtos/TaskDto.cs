@@ -5,6 +5,9 @@
         public TaskDto() { }
         public TaskDto(Entities.Task entity)
         {
+            if (entity == null)
+                return;
+
             Id = entity.Id;
             Title = entity.Title;
             Description = entity.Description;
