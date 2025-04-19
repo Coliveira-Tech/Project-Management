@@ -16,7 +16,7 @@
             CreatedAt = entity.CreatedAt;
             UpdatedAt = entity.UpdatedAt;
             Project = new ProjectDto(entity.Project);
-            User = new UserDto(entity.AssignedUser);
+            AssignedUser = new UserDto(entity.AssignedUser);
         }
 
         public Guid Id { get; set; }
@@ -27,6 +27,6 @@
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public ProjectDto Project { get; set; } = null!;
-        public UserDto User { get; set; } = null!;
+        public UserDto AssignedUser { get; set; } = null!;
     }
 }

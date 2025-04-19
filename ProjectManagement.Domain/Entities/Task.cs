@@ -4,6 +4,33 @@ namespace ProjectManagement.Domain.Entities
 {
     public class Task : BaseEntity
     {
+        public Task() { }
+
+        public Task(TaskInsertRequest request)
+        {
+
+            Title = request.Title;
+            Description = request.Description;
+            DueDate = request.DueDate;
+            CreatedAt = request.CreatedAt;
+            UpdatedAt = request.UpdatedAt;
+            Status = Enums.TaskStatus.Pending;
+            Priority = Enums.TaskPriority.Low;
+            ProjectId = request.ProjectId;
+            AssignedUserId = request.AssignedUserId;
+        }
+
+        public Task(TaskUpdateRequest request)
+        {
+            Title = request.Title;
+            Description = request.Description;
+            DueDate = request.DueDate;
+            UpdatedAt = request.UpdatedAt;
+            Status = request.Status;
+            ProjectId = request.ProjectId;
+            AssignedUserId = request.AssignedUserId;
+        }
+
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public DateTime DueDate { get; set; }

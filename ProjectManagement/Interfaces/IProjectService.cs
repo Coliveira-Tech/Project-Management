@@ -5,6 +5,7 @@ namespace ProjectManagement.Api.Interfaces
     public interface IProjectService
     {
         Task<ProjectResponse> GetByUser(Guid userId);
+        Task<ProjectResponse> GetById(Guid projectId);
         Task<ProjectResponse> Insert<TRequest>(TRequest request);
         Task<ProjectResponse> Update<TRequest>(Guid id, TRequest request);
         Task<ProjectResponse> Delete(Guid projectId);

@@ -19,6 +19,11 @@ namespace ProjectManagement.Api.Services
             return await GetBy(x => x.OwnerId == userId);
         }
 
+        public async Task<ProjectResponse> GetById(Guid projectId)
+        {
+            return await GetBy(x => x.Id == projectId);
+        }
+
         public override async Task<ProjectResponse> Delete(Guid projectId)
         {
             ProjectResponse response = new();
