@@ -16,7 +16,7 @@ namespace ProjectManagement.Api.Infra.Data.Configuration
 
             builder.HasKey(e => e.Id);
 
-            builder.Navigation(e => e.Tasks).AutoInclude();
+            builder.Navigation(e => e.Tasks).AutoInclude(true);
             builder.Navigation(e => e.Owner).AutoInclude();
 
             builder.HasMany(e => e.Tasks)

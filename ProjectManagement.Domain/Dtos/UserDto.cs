@@ -15,14 +15,14 @@ namespace ProjectManagement.Domain.Dtos
             Id = entity.Id;
             Name = entity.Name;
             Email = entity.Email;
-            Password = entity.Password;
             Role = entity.Role;
         }
 
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
+        public string? Password { get; set; } = null;
         public UserRole Role { get; set; } = UserRole.Guest;
+        public string RoleDescription { get => Role.ToString(); }
     }
 }

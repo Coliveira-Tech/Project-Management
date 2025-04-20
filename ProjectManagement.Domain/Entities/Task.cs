@@ -8,14 +8,13 @@ namespace ProjectManagement.Domain.Entities
 
         public Task(TaskInsertRequest request)
         {
-
             Title = request.Title;
             Description = request.Description;
             DueDate = request.DueDate;
             CreatedAt = request.CreatedAt;
             UpdatedAt = request.UpdatedAt;
-            Status = Enums.TaskStatus.Pending;
-            Priority = Enums.TaskPriority.Low;
+            Status = request.Status;
+            Priority = request.Priority;
             ProjectId = request.ProjectId;
             AssignedUserId = request.AssignedUserId;
         }
@@ -44,8 +43,8 @@ namespace ProjectManagement.Domain.Entities
         public Guid AssignedUserId { get; set; }
 
         // Navigation property
-        public virtual Project Project { get; set; } = new Project();
-        public virtual User AssignedUser { get; set; } = new User();
+        public virtual Project Project { get; set; } = null!;
+        public virtual User AssignedUser { get; set; } = null!;
         public virtual ICollection<Comment> Comments { get; set; } = [];
         public virtual ICollection<TaskHistory> TaskHistory { get; set; } = [];
     }

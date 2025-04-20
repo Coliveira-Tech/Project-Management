@@ -15,7 +15,6 @@
             Priority = entity.Priority;
             CreatedAt = entity.CreatedAt;
             UpdatedAt = entity.UpdatedAt;
-            Project = new ProjectDto(entity.Project);
             AssignedUser = new UserDto(entity.AssignedUser);
         }
 
@@ -23,7 +22,9 @@
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public Enums.TaskStatus Status { get; set; }
+        public string StatusDescription { get => Status.ToString(); }
         public Enums.TaskPriority Priority { get; set; }
+        public string PriorityDescription { get => Priority.ToString(); }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public ProjectDto Project { get; set; } = null!;

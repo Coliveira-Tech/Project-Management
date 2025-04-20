@@ -338,6 +338,7 @@ namespace ProjectManagement.Api.Services
         {
             bool stringIsNullOrEmpty = false;
             bool guidIsNullOrDefault = false;
+            bool datetimeIsNullOrDefault = false;
 
             if(property == null || value == null)
                 return false;
@@ -350,11 +351,16 @@ namespace ProjectManagement.Api.Services
                 case "Guid":
                     guidIsNullOrDefault = Guid.Empty == (Guid)value;
                     break;
+                case "DateTime":
+                    datetimeIsNullOrDefault = DateTime.MinValue == (DateTime)value;
+                    break;
                 default:
                     break;
             }
 
-            if (stringIsNullOrEmpty || guidIsNullOrDefault)
+            if (stringIsNullOrEmpty 
+             || guidIsNullOrDefault 
+             || datetimeIsNullOrDefault)
                 return false;
 
             return true;
