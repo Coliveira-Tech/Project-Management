@@ -8,9 +8,9 @@ namespace ProjectManagement.Api.Services
     public class TaskHistoryService(ILogger<TaskHistoryService> logger
                                   , IRepository<TaskHistory> repository)
         : BaseService<TaskHistoryService
-    , TaskHistory
-    , TaskHistoryDto
-            , TaskHistoryResponse>(logger, repository)
+        , TaskHistory
+        , TaskHistoryDto
+        , TaskHistoryResponse>(logger, repository)
         , ITaskHistoryService
     {
         private readonly ILogger<TaskHistoryService> _logger = logger;

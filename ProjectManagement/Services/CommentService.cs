@@ -8,12 +8,14 @@ namespace ProjectManagement.Api.Services
     public class CommentService(ILogger<CommentService> logger
                               , IRepository<Comment> repository)
         : BaseService<CommentService
-    , Comment
-    , CommentDto
-            , CommentResponse>(logger, repository)
+        , Comment
+        , CommentDto
+        , CommentResponse>(logger, repository)
         , ICommentService
     {
-        private readonly ILogger<CommentService> _logger = logger;
-        private readonly IRepository<Comment> _repository = repository;
+        public async Task<CommentResponse> GetByTask(Guid taskId)
+        {
+            return await GetBy(x => x.TaskId == taskId);
+        }
     }
 }

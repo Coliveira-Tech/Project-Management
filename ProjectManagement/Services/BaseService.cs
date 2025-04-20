@@ -16,6 +16,11 @@ namespace ProjectManagement.Api.Services
         private readonly ILogger<TService> _logger = logger;
         private readonly IRepository<TEntity> _repository = repository;
 
+        public virtual async Task<TResponse> GetById(Guid id)
+        {
+            return await GetBy(x => x.Id == id);
+        }
+
         public virtual async Task<TResponse> GetBy(Expression<Func<TEntity, bool>> predicate)
         {
             TResponse response = new();

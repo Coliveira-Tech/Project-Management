@@ -13,7 +13,6 @@ namespace ProjectManagement.Domain.Dtos
             Id = entity.Id;
             Content = entity.Content;
             CreatedAt = entity.CreatedAt;
-            Task = new TaskDto(entity.Task);
             User = new UserDto(entity.User);
         }
 

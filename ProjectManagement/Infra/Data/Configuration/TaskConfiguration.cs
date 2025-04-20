@@ -22,7 +22,6 @@ namespace ProjectManagement.Api.Infra.Data.Configuration
             builder.HasKey(e => e.Id);
 
             builder.Navigation(e => e.AssignedUser).AutoInclude();
-            //builder.Navigation(e => e.Project).AutoInclude();
             builder.Navigation(e => e.Comments).AutoInclude();
 
             builder.HasOne(e => e.Project)

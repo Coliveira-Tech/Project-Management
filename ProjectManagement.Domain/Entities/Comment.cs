@@ -4,6 +4,20 @@ namespace ProjectManagement.Domain.Entities
 {
     public class Comment : BaseEntity
     {
+        public Comment() { }
+
+        public Comment(CommentInsertRequest request)
+        {
+            Content = request.Content;
+            TaskId = request.TaskId;
+            UserId = request.UserId;
+        }
+
+        public Comment(CommentUpdateRequest request)
+        {
+            Content = request.Content;
+        }
+
         public string Content { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 

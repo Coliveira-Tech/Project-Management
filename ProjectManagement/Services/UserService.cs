@@ -8,12 +8,10 @@ namespace ProjectManagement.Api.Services
     public class UserService(ILogger<UserService> logger
                            , IRepository<User> repository)
         : BaseService<UserService
-    , User
-    , UserDto
-            , UserResponse>(logger, repository)
+        , User
+        , UserDto
+        , UserResponse>(logger, repository)
         , IUserService
     {
-        private readonly ILogger<UserService> _logger = logger;
-        private readonly IRepository<User> _repository = repository;
     }
 }
