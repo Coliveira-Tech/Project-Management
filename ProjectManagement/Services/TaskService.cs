@@ -16,6 +16,7 @@ namespace ProjectManagement.Api.Services
         , TaskResponse>(logger, repository, httpContextAccessor)
         , ITaskService
     {
+        private readonly ILogger<TaskService> _logger = logger;
         private readonly IProjectService _projectService = projectService;
         private readonly ITaskHistoryService _taskHistoryService = taskHistoryService;
 
@@ -65,7 +66,8 @@ namespace ProjectManagement.Api.Services
             return response;
         }
 
-        protected override async Task AfterInsert(Domain.Entities.Task entity, List<Tuple<PropertyInfo?, object?>> updatedProperties)
+        protected override async Task AfterUpdate(Domain.Entities.Task entity
+                                                , List<Tuple<PropertyInfo?, object?, object?>> updatedProperties)
         {
             try
             {
@@ -74,13 +76,14 @@ namespace ProjectManagement.Api.Services
                 updatedProperties.ForEach(updatedProperty =>
                 {
                     PropertyInfo? propertyInfo = updatedProperty.Item1;
-                    object? newValue = updatedProperty.Item2;
+                    object? oldValue = updatedProperty.Item2;
+                    object? newValue = updatedProperty.Item3;
 
                     TaskHistoryInsertRequest request = new()
                     {
                         TaskId = entity.Id,
                         Field = propertyInfo?.Name ?? string.Empty,
-                        OldValue = propertyInfo?.GetValue(entity)?.ToString() ?? string.Empty,
+                        OldValue = oldValue?.ToString() ?? string.Empty,
                         NewValue = newValue?.ToString() ?? string.Empty,
                         UserId = GetLoggedUserId()
                     };
@@ -88,11 +91,12 @@ namespace ProjectManagement.Api.Services
                     requests.Add(request);
                 });
 
-                await _taskHistoryService.InsertRange(requests);
+                if(requests.Count > 0)
+                    await _taskHistoryService.InsertRange(requests);
             }
             catch (Exception ex)
             {
-                var s = ex.Message;
+                _logger.LogError(ex, "Error trying to insert TaskHistory");
             }
         }
     }

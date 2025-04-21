@@ -31,8 +31,8 @@ namespace ProjectManagement.Domain.Entities
         public DateTime DueDate { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
-        public Enums.TaskStatus Status { get; set; } = Enums.TaskStatus.Pending;
-        public Enums.TaskPriority Priority { get; set; } = Enums.TaskPriority.Low;
+        public Enums.TaskStatus Status { get; set; } = Enums.TaskStatus.None;
+        public Enums.TaskPriority Priority { get; set; } = Enums.TaskPriority.None;
 
         // Foreign key
         public Guid ProjectId { get; set; }

@@ -21,9 +21,9 @@ namespace ProjectManagement.Api.Services
         private readonly IRepository<TEntity> _repository = repository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-        protected virtual async Tasks.Task AfterInsert(TEntity entity, List<Tuple<PropertyInfo?, object?>> updatedProperties) => await Tasks.Task.CompletedTask;
-        protected virtual async Tasks.Task AfterInsert(TEntity? entity) => await Tasks.Task.CompletedTask;
-        protected virtual async Tasks.Task AfterDelete(TEntity? entity) => await Tasks.Task.CompletedTask;
+        protected virtual async Tasks.Task AfterUpdate(TEntity entity, List<Tuple<PropertyInfo?, object?, object?>> updatedProperties) => await Tasks.Task.CompletedTask;
+        protected virtual async Tasks.Task AfterInsert(TEntity entity) => await Tasks.Task.CompletedTask;
+        protected virtual async Tasks.Task AfterDelete(TEntity entity) => await Tasks.Task.CompletedTask;
 
         public virtual async Task<TResponse> GetById(Guid id)
         {
@@ -197,19 +197,21 @@ namespace ProjectManagement.Api.Services
                     return response;
                 }
 
-                List<Tuple<PropertyInfo?, object?>> updatedProperties = [];
+                List<Tuple<PropertyInfo?, object?, object?>> updatedProperties = [];
 
                 request.GetType().GetProperties().ToList().ForEach(prop =>
                 {
-                    object? value = prop.GetValue(request);
+                    object? newValue = prop.GetValue(request);
                     PropertyInfo? property = entity
                                                 .GetType()
                                                 .GetProperty(prop.Name);
+                    object? oldValue = property?.GetValue(entity);
+                                        
 
-                    if (CanSetValue(property, value))
+                    if (CanSetValue(property, oldValue, newValue))
                     {
-                        updatedProperties.Add(new(property, value));//TODO: revisar questão da referencia para que ele atualize antes
-                        property?.SetValue(entity, value);
+                        updatedProperties.Add(new(property, oldValue, newValue));
+                        property?.SetValue(entity, newValue);
                     }
                 });
 
@@ -222,7 +224,7 @@ namespace ProjectManagement.Api.Services
                 response.ListResponse.Add(dto);
                 response.IsSuccess = true;
 
-                await AfterInsert(entity, updatedProperties);
+                await AfterUpdate(entity, updatedProperties);
 
                 _logger.LogInformation("Successfully inserted {0} {1} | Method: {2}"
                                     , typeof(TEntity).Name
@@ -361,25 +363,36 @@ namespace ProjectManagement.Api.Services
             return response;
         }
 
-        private static bool CanSetValue(PropertyInfo? property, object? value)
+        private static bool CanSetValue(PropertyInfo? property, object? oldValue, object? newValue)
         {
             bool stringIsNullOrEmpty = false;
             bool guidIsNullOrDefault = false;
             bool datetimeIsNullOrDefault = false;
+            bool EnumIsDefault = false;
 
-            if(property == null || value == null)
+            if(property == null || newValue == null)
                 return false;
 
-            switch (value.GetType().Name)
+            if(oldValue?.ToString() == newValue.ToString())
+                return false;
+
+            string type = newValue.GetType().IsEnum 
+                        ? "Enum" 
+                        : newValue.GetType().Name;
+
+            switch (type)
             {
                 case "String":
-                    stringIsNullOrEmpty = string.IsNullOrEmpty(value?.ToString());
+                    stringIsNullOrEmpty = string.IsNullOrEmpty(newValue?.ToString());
                     break;
                 case "Guid":
-                    guidIsNullOrDefault = Guid.Empty == (Guid)value;
+                    guidIsNullOrDefault = Guid.Empty == (Guid)newValue;
                     break;
                 case "DateTime":
-                    datetimeIsNullOrDefault = DateTime.MinValue == (DateTime)value;
+                    datetimeIsNullOrDefault = DateTime.MinValue == (DateTime)newValue;
+                    break;
+                case "Enum":
+                    EnumIsDefault = newValue?.ToString() == "None";
                     break;
                 default:
                     break;
@@ -387,7 +400,8 @@ namespace ProjectManagement.Api.Services
 
             if (stringIsNullOrEmpty 
              || guidIsNullOrDefault 
-             || datetimeIsNullOrDefault)
+             || datetimeIsNullOrDefault
+             || EnumIsDefault)
                 return false;
 
             return true;

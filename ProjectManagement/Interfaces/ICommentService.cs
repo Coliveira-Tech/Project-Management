@@ -6,7 +6,6 @@ namespace ProjectManagement.Api.Interfaces
     {
         Task<CommentResponse> GetByTask(Guid taskId);
         Task<CommentResponse> Insert<TRequest>(TRequest request);
-        Task<CommentResponse> Update<TRequest>(Guid commentId, TRequest request);
         Task<CommentResponse> Delete(Guid commentId);
     }
 }

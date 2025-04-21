@@ -22,7 +22,7 @@ namespace ProjectManagement.Domain.Dtos
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string? Password { get; set; } = null;
-        public UserRole Role { get; set; } = UserRole.Guest;
+        public UserRole Role { get; set; } = UserRole.None;
         public string RoleDescription { get => Role.ToString(); }
     }
 }

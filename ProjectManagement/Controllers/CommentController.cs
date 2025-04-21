@@ -27,13 +27,6 @@ namespace ProjectManagement.Api.Controllers
             return response.ToHttpResult();
         }
 
-        [HttpPut("{commentId}")]
-        public async Task<IActionResult> Update([FromRoute] Guid commentId, [FromBody] CommentUpdateRequest request)
-        {
-            CommentResponse response = await _service.Update(commentId, request);
-            return response.ToHttpResult();
-        }
-
         [HttpDelete("{commentId}")]
         public async Task<IActionResult> Delete([FromRoute] Guid commentId)
         {

@@ -7,7 +7,7 @@ namespace ProjectManagement.Domain.Entities
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public UserRole Role { get; set; } = UserRole.Guest;
+        public UserRole Role { get; set; } = UserRole.None;
 
         // Navigation properties
         public virtual ICollection<Project> Projects { get; set; } = [];
