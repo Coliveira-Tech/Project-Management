@@ -2,6 +2,7 @@
 using ProjectManagement.Domain.Dtos;
 using ProjectManagement.Domain.Entities;
 using ProjectManagement.Domain.Models;
+using System.Reflection;
 
 namespace ProjectManagement.Api.Services
 {
@@ -16,6 +17,11 @@ namespace ProjectManagement.Api.Services
         public async Task<CommentResponse> GetByTask(Guid taskId)
         {
             return await GetBy(x => x.TaskId == taskId);
+        }
+
+        protected override void BeforeSetValue(PropertyInfo? propertyInfo, object? newValue)
+        {
+            
         }
     }
 }

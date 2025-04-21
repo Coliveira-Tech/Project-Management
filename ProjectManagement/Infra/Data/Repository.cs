@@ -1,8 +1,9 @@
-﻿using ProjectManagement.Domain.Models;
+﻿using Microsoft.EntityFrameworkCore;
 using ProjectManagement.Api.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using ProjectManagement.Domain.Entities;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using Tasks = System.Threading.Tasks;
 
 namespace ProjectManagement.Api.Infra.Data
 {
@@ -21,31 +22,31 @@ namespace ProjectManagement.Api.Infra.Data
             return await entity.ToListAsync();
         }
         
-        public async Task Insert(T entity)
+        public async Tasks.Task Insert(T entity)
         {
             ArgumentNullException.ThrowIfNull(entity);
             this.entity.Add(entity);
             await context.SaveChangesAsync();
         }
-        public async Task InsertRange(IEnumerable<T> entities)
+        public async Tasks.Task InsertRange(IEnumerable<T> entities)
         {
             ArgumentNullException.ThrowIfNull(entities);
             this.entity.AddRange(entities);
             await context.SaveChangesAsync();
         }
-        public async Task Update(T entity)
+        public async Tasks.Task Update(T entity)
         {
             ArgumentNullException.ThrowIfNull(entity);
             await context.SaveChangesAsync();
         }
-        public async Task Delete(T entity)
+        public async Tasks.Task Delete(T entity)
         {
             ArgumentNullException.ThrowIfNull(entity);
             this.entity.Remove(entity);
             await context.SaveChangesAsync();
         }
 
-        public async Task DeleteRange(IEnumerable<T> entities)
+        public async Tasks.Task DeleteRange(IEnumerable<T> entities)
         {
             ArgumentNullException.ThrowIfNull(entity);
             this.entity.RemoveRange(entities);

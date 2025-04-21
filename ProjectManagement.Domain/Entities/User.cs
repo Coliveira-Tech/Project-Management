@@ -1,5 +1,4 @@
 ﻿using ProjectManagement.Domain.Enums;
-using ProjectManagement.Domain.Models;
 
 namespace ProjectManagement.Domain.Entities
 {

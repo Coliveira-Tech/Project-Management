@@ -1,5 +1,6 @@
 ﻿using ProjectManagement.Api.Extensions;
 using ProjectManagement.Api.Interfaces;
+using ProjectManagement.Domain.Entities;
 using ProjectManagement.Domain.Models;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -16,6 +17,10 @@ namespace ProjectManagement.Api.Services
         private readonly ILogger<TService> _logger = logger;
         private readonly IRepository<TEntity> _repository = repository;
 
+        protected virtual void BeforeSetValue(PropertyInfo? propertyInfo, object? newValue) { }
+        protected virtual void AfterInsert(TEntity? entity) { }
+        protected virtual void AfterDelete(TEntity? entity) { }
+
         public virtual async Task<TResponse> GetById(Guid id)
         {
             return await GetBy(x => x.Id == id);
@@ -24,7 +29,7 @@ namespace ProjectManagement.Api.Services
         public virtual async Task<TResponse> GetBy(Expression<Func<TEntity, bool>> predicate)
         {
             TResponse response = new();
-
+            
             try
             {
                 IEnumerable<TEntity> result = await _repository
@@ -106,6 +111,8 @@ namespace ProjectManagement.Api.Services
 
                 response.ListResponse.Add(dto);
                 response.IsSuccess = true;
+
+                AfterInsert(entity);
 
                 _logger.LogInformation("Successfully inserted {0} {1} | Method: {2}"
                                     , typeof(TEntity).Name
@@ -194,7 +201,10 @@ namespace ProjectManagement.Api.Services
                                                 .GetProperty(prop.Name);
 
                     if (CanSetValue(property, value))
+                    {
+                        BeforeSetValue(property, value);
                         property?.SetValue(entity, value);
+                    }
                 });
 
                 await _repository.Update(entity);
@@ -246,6 +256,8 @@ namespace ProjectManagement.Api.Services
                 response.ListResponse.Add(dto);
                 response.IsSuccess = true;
 
+                AfterDelete(entity);
+
                 _logger.LogInformation("Successfully delete {0} {1} | Method: {2}"
                                     , typeof(TEntity).Name
                                     , entity.Id
@@ -282,6 +294,8 @@ namespace ProjectManagement.Api.Services
 
                 response.ListResponse.Add(dto);
                 response.IsSuccess = true;
+
+                AfterDelete(entity);
 
                 _logger.LogInformation("Successfully delete {0} {1} | Method: {2}"
                                     , typeof(TEntity).Name

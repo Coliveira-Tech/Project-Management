@@ -1,4 +1,4 @@
-﻿namespace ProjectManagement.Domain.Models
+﻿namespace ProjectManagement.Domain.Entities
 {
     public class BaseEntity
     {

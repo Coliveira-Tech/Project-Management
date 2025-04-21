@@ -15,7 +15,6 @@ namespace ProjectManagement.Domain.Dtos
             Field = entity.Field;
             OldValue = entity.OldValue;
             NewValue = entity.NewValue;
-            Task = new TaskDto(entity.Task);
             User = new UserDto(entity.User);
         }
 

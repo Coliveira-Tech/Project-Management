@@ -1,6 +1,7 @@
 ﻿using ProjectManagement.Api.Interfaces;
 using ProjectManagement.Domain.Dtos;
 using ProjectManagement.Domain.Models;
+using System.Reflection;
 
 namespace ProjectManagement.Api.Services
 {
@@ -59,6 +60,19 @@ namespace ProjectManagement.Api.Services
             }
 
             return response;
+        }
+
+        protected override void BeforeSetValue(PropertyInfo? propertyInfo, object? newValue)
+        {
+            try
+            {
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

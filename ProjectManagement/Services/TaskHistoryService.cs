@@ -13,7 +13,9 @@ namespace ProjectManagement.Api.Services
         , TaskHistoryResponse>(logger, repository)
         , ITaskHistoryService
     {
-        private readonly ILogger<TaskHistoryService> _logger = logger;
-        private readonly IRepository<TaskHistory> _repository = repository;
+        public async Task<TaskHistoryResponse> GetByTask(Guid taskId)
+        {
+            return await GetBy(x => x.TaskId == taskId);
+        }
     }
 }

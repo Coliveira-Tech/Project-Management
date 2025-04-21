@@ -4,6 +4,17 @@ namespace ProjectManagement.Domain.Entities
 {
     public class TaskHistory : BaseEntity
     {
+        public TaskHistory() { }
+
+        public TaskHistory(TaskHistoryInsertRequest request)
+        {
+            Field = request.Field;
+            OldValue = request.OldValue;
+            NewValue = request.NewValue;
+            TaskId = request.TaskId;
+            UserId = request.UserId;
+        }
+
         public DateTime Timestamp { get; set; } = DateTime.Now;
         public string Field { get; set; } = string.Empty;
         public string OldValue { get; set; } = string.Empty;
