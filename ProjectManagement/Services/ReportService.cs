@@ -1,13 +1,21 @@
 ﻿using ProjectManagement.Api.Interfaces;
 using ProjectManagement.Domain.Dtos;
+using ProjectManagement.Domain.Entities;
 using ProjectManagement.Domain.Models;
 using Enums = ProjectManagement.Domain.Enums;
 
 namespace ProjectManagement.Api.Services
 {
-    public class ReportService(ITaskService taskService
-                             , ITaskHistoryService taskHistoryService
-                             , IHttpContextAccessor httpContextAccessor) : IReportService
+    public class ReportService(ILogger<ReportService> logger
+                             , IRepository<BaseEntity> repository
+                             , IHttpContextAccessor httpContextAccessor
+                             , ITaskService taskService 
+                             , ITaskHistoryService taskHistoryService)
+        : BaseService<ReportService
+        , BaseEntity
+        , ReportDto
+        , ReportResponse>(logger, repository, httpContextAccessor)
+        , IReportService
     {
         private readonly ITaskService _taskService = taskService;
         private readonly ITaskHistoryService _taskHistoryService = taskHistoryService;
@@ -18,6 +26,15 @@ namespace ProjectManagement.Api.Services
 
             try
             {
+                if (!IsManager())
+                {
+                    response.Message.Add("Only managers can access this resource");
+                    response.IsSuccess = false;
+                    response.ErrorCode = StatusCodes.Status401Unauthorized;
+
+                    return response;
+                }
+
                 TaskResponse tasks = await _taskService.GetBy(task => task.CreatedAt >= request.StartDate
                                                                    && task.CreatedAt <= request.EndDate);
 
@@ -76,6 +93,15 @@ namespace ProjectManagement.Api.Services
 
             try
             {
+                if (!IsManager())
+                {
+                    response.Message.Add("Only managers can access this resource");
+                    response.IsSuccess = false;
+                    response.ErrorCode = StatusCodes.Status401Unauthorized;
+
+                    return response;
+                }
+
                 TaskResponse tasks = await _taskService.GetBy(task => task.AssignedUserId == request.AssignedUserId
                                                                && task.CreatedAt >= request.StartDate
                                                                && task.CreatedAt <= request.EndDate);
@@ -130,6 +156,11 @@ namespace ProjectManagement.Api.Services
             }
 
             return response;
+        }
+
+        private bool IsManager() 
+        { 
+            return GetLoggedUserRole() == Enums.UserRole.Manager;
         }
     }
 }

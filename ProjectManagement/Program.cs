@@ -30,8 +30,8 @@ builder.Services.AddOpenApi(options =>
 {
     options.AddOperationTransformer((operation, context, cancellationToken) =>
     {
-        operation.Parameters = operation.Parameters ?? [];
-        operation.Parameters.Add(new OpenApiParameter()
+        operation.Parameters ??= [];
+        operation.Parameters.Add(new ()
         {
             Name = "LoggedUserId",
             In = ParameterLocation.Header,
@@ -41,7 +41,18 @@ builder.Services.AddOpenApi(options =>
                 Type = "string"
             }
         });
-        
+
+        operation.Parameters.Add(new ()
+        {
+            Name = "LoggedUserRole",
+            In = ParameterLocation.Header,
+            Required = false,
+            Schema = new OpenApiSchema()
+            {
+                Type = "string"
+            }
+        });
+
         return Task.CompletedTask;
     });
 

@@ -10,6 +10,7 @@ namespace ProjectManagement.Api.Extensions
             return response.ErrorCode switch
             {
                 StatusCodes.Status400BadRequest => new BadRequestObjectResult(response),
+                StatusCodes.Status401Unauthorized => new UnauthorizedObjectResult(response),
                 StatusCodes.Status404NotFound => new NotFoundObjectResult(response),
                 StatusCodes.Status422UnprocessableEntity => new UnprocessableEntityObjectResult(response),
                 _ => new OkObjectResult(response),

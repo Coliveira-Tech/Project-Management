@@ -2,6 +2,7 @@
 using ProjectManagement.Api.Extensions;
 using ProjectManagement.Api.Interfaces;
 using ProjectManagement.Domain.Entities;
+using ProjectManagement.Domain.Enums;
 using ProjectManagement.Domain.Models;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -409,17 +410,33 @@ namespace ProjectManagement.Api.Services
 
         protected Guid GetLoggedUserId()
         {
-            StringValues headerValue = new();
-
-            _httpContextAccessor
-            .HttpContext
-            ?.Request
-            .Headers
-            .TryGetValue("LoggedUserId", out headerValue);
-
-            string? userId = headerValue.ToString();
-
+            string? userId = GetHeaders("LoggedUserId");
             return string.IsNullOrEmpty(userId) ? Guid.Empty : Guid.Parse(userId);
         }
+
+        protected UserRole GetLoggedUserRole()
+        {
+            string? roleId = GetHeaders("LoggedUserRole");
+            return string.IsNullOrEmpty(roleId) ? UserRole.None : (UserRole)int.Parse(roleId);
+        }
+
+        private string? GetHeaders(string key)
+        {
+            try
+            {
+                StringValues headerValue = new();
+
+                IHeaderDictionary? headers = _httpContextAccessor.HttpContext?.Request.Headers;
+                headers?.TryGetValue(key, out headerValue);
+
+                return headerValue.ToString();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
     }
 }
