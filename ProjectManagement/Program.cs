@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using ProjectManagement.Api.Extensions;
 using ProjectManagement.Api.Infra.Data;
 using ProjectManagement.Api.Interfaces;
@@ -23,7 +24,27 @@ builder.Services.AddMvc()
 string? conn = builder.Configuration.GetConnectionString("ProjectManagementDatabase");
 builder.Services.AddDbContext<Context>(options => options.UseSqlServer(conn));
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddOperationTransformer((operation, context, cancellationToken) =>
+    {
+        operation.Parameters = operation.Parameters ?? [];
+        operation.Parameters.Add(new OpenApiParameter()
+        {
+            Name = "LoggedUserId",
+            In = ParameterLocation.Header,
+            Required = true,
+            Schema = new OpenApiSchema()
+            {
+                Type = "string"
+            }
+        });
+        
+        return Task.CompletedTask;
+    });
+
+});
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();

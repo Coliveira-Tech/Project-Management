@@ -7,14 +7,17 @@ namespace ProjectManagement.Api.Services
 {
     public class TaskService(ILogger<TaskService> logger
                            , IRepository<Domain.Entities.Task> repository
-                           , IProjectService projectService)
+                           , IProjectService projectService
+                           , ITaskHistoryService taskHistoryService
+                           , IHttpContextAccessor httpContextAccessor)
         : BaseService<TaskService
         , Domain.Entities.Task
         , TaskDto
-        , TaskResponse>(logger, repository)
+        , TaskResponse>(logger, repository, httpContextAccessor)
         , ITaskService
     {
         private readonly IProjectService _projectService = projectService;
+        private readonly ITaskHistoryService _taskHistoryService = taskHistoryService;
 
         public async Task<TaskResponse> GetByUser(Guid userId)
         {
@@ -62,16 +65,34 @@ namespace ProjectManagement.Api.Services
             return response;
         }
 
-        protected override void BeforeSetValue(PropertyInfo? propertyInfo, object? newValue)
+        protected override async Task AfterInsert(Domain.Entities.Task entity, List<Tuple<PropertyInfo?, object?>> updatedProperties)
         {
             try
             {
+                List<TaskHistoryInsertRequest> requests = [];
 
+                updatedProperties.ForEach(updatedProperty =>
+                {
+                    PropertyInfo? propertyInfo = updatedProperty.Item1;
+                    object? newValue = updatedProperty.Item2;
+
+                    TaskHistoryInsertRequest request = new()
+                    {
+                        TaskId = entity.Id,
+                        Field = propertyInfo?.Name ?? string.Empty,
+                        OldValue = propertyInfo?.GetValue(entity)?.ToString() ?? string.Empty,
+                        NewValue = newValue?.ToString() ?? string.Empty,
+                        UserId = GetLoggedUserId()
+                    };
+
+                    requests.Add(request);
+                });
+
+                await _taskHistoryService.InsertRange(requests);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                var s = ex.Message;
             }
         }
     }

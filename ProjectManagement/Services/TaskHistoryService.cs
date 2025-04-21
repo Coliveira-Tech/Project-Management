@@ -6,11 +6,12 @@ using ProjectManagement.Domain.Models;
 namespace ProjectManagement.Api.Services
 {
     public class TaskHistoryService(ILogger<TaskHistoryService> logger
-                                  , IRepository<TaskHistory> repository)
+                                  , IRepository<TaskHistory> repository
+                              , IHttpContextAccessor httpContextAccessor)
         : BaseService<TaskHistoryService
         , TaskHistory
         , TaskHistoryDto
-        , TaskHistoryResponse>(logger, repository)
+        , TaskHistoryResponse>(logger, repository, httpContextAccessor)
         , ITaskHistoryService
     {
         public async Task<TaskHistoryResponse> GetByTask(Guid taskId)

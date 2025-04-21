@@ -1,14 +1,17 @@
-﻿using ProjectManagement.Api.Extensions;
+﻿using Microsoft.Extensions.Primitives;
+using ProjectManagement.Api.Extensions;
 using ProjectManagement.Api.Interfaces;
 using ProjectManagement.Domain.Entities;
 using ProjectManagement.Domain.Models;
 using System.Linq.Expressions;
 using System.Reflection;
+using Tasks = System.Threading.Tasks;
 
 namespace ProjectManagement.Api.Services
 {
     public class BaseService<TService, TEntity, TDto, TResponse>(ILogger<TService> logger,
-                            IRepository<TEntity> repository) 
+                            IRepository<TEntity> repository,
+                            IHttpContextAccessor httpContextAccessor) 
         where TDto : class
         where TService : class
         where TEntity : BaseEntity, new()
@@ -16,10 +19,11 @@ namespace ProjectManagement.Api.Services
     {
         private readonly ILogger<TService> _logger = logger;
         private readonly IRepository<TEntity> _repository = repository;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-        protected virtual void BeforeSetValue(PropertyInfo? propertyInfo, object? newValue) { }
-        protected virtual void AfterInsert(TEntity? entity) { }
-        protected virtual void AfterDelete(TEntity? entity) { }
+        protected virtual async Tasks.Task AfterInsert(TEntity entity, List<Tuple<PropertyInfo?, object?>> updatedProperties) => await Tasks.Task.CompletedTask;
+        protected virtual async Tasks.Task AfterInsert(TEntity? entity) => await Tasks.Task.CompletedTask;
+        protected virtual async Tasks.Task AfterDelete(TEntity? entity) => await Tasks.Task.CompletedTask;
 
         public virtual async Task<TResponse> GetById(Guid id)
         {
@@ -112,7 +116,7 @@ namespace ProjectManagement.Api.Services
                 response.ListResponse.Add(dto);
                 response.IsSuccess = true;
 
-                AfterInsert(entity);
+                await AfterInsert(entity);
 
                 _logger.LogInformation("Successfully inserted {0} {1} | Method: {2}"
                                     , typeof(TEntity).Name
@@ -193,6 +197,8 @@ namespace ProjectManagement.Api.Services
                     return response;
                 }
 
+                List<Tuple<PropertyInfo?, object?>> updatedProperties = [];
+
                 request.GetType().GetProperties().ToList().ForEach(prop =>
                 {
                     object? value = prop.GetValue(request);
@@ -202,7 +208,7 @@ namespace ProjectManagement.Api.Services
 
                     if (CanSetValue(property, value))
                     {
-                        BeforeSetValue(property, value);
+                        updatedProperties.Add(new(property, value));//TODO: revisar questão da referencia para que ele atualize antes
                         property?.SetValue(entity, value);
                     }
                 });
@@ -215,6 +221,8 @@ namespace ProjectManagement.Api.Services
 
                 response.ListResponse.Add(dto);
                 response.IsSuccess = true;
+
+                await AfterInsert(entity, updatedProperties);
 
                 _logger.LogInformation("Successfully inserted {0} {1} | Method: {2}"
                                     , typeof(TEntity).Name
@@ -256,7 +264,7 @@ namespace ProjectManagement.Api.Services
                 response.ListResponse.Add(dto);
                 response.IsSuccess = true;
 
-                AfterDelete(entity);
+                await AfterDelete(entity);
 
                 _logger.LogInformation("Successfully delete {0} {1} | Method: {2}"
                                     , typeof(TEntity).Name
@@ -295,7 +303,7 @@ namespace ProjectManagement.Api.Services
                 response.ListResponse.Add(dto);
                 response.IsSuccess = true;
 
-                AfterDelete(entity);
+                await AfterDelete(entity);
 
                 _logger.LogInformation("Successfully delete {0} {1} | Method: {2}"
                                     , typeof(TEntity).Name
@@ -383,6 +391,21 @@ namespace ProjectManagement.Api.Services
                 return false;
 
             return true;
+        }
+
+        protected Guid GetLoggedUserId()
+        {
+            StringValues headerValue = new();
+
+            _httpContextAccessor
+            .HttpContext
+            ?.Request
+            .Headers
+            .TryGetValue("LoggedUserId", out headerValue);
+
+            string? userId = headerValue.ToString();
+
+            return string.IsNullOrEmpty(userId) ? Guid.Empty : Guid.Parse(userId);
         }
     }
 }

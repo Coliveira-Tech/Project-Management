@@ -6,11 +6,12 @@ using ProjectManagement.Domain.Models;
 namespace ProjectManagement.Api.Services
 {
     public class ProjectService(ILogger<ProjectService> logger
-                              , IRepository<Project> repository)
+                              , IRepository<Project> repository
+                              , IHttpContextAccessor httpContextAccessor)
         : BaseService<ProjectService
         , Project
         , ProjectDto
-        , ProjectResponse>(logger, repository)
+        , ProjectResponse>(logger, repository, httpContextAccessor)
         , IProjectService
     {
 
