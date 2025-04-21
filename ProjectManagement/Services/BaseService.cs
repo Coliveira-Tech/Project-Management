@@ -64,40 +64,6 @@ namespace ProjectManagement.Api.Services
             return response;
         }
 
-        public virtual async Task<TResponse> GetAll()
-        {
-            TResponse response = new();
-
-            try
-            {
-                IEnumerable<TEntity> result = await _repository
-                                                        .GetAll();
-
-                if (!result.Any())
-                {
-                    response.Message.Add($"{typeof(TEntity).Name} not found");
-                    response.ErrorCode = StatusCodes.Status404NotFound;
-                    return response;
-                }
-
-                response.ListResponse.AddRange(result.ToDtoList<TEntity, TDto>());
-                response.IsSuccess = true;
-
-                _logger.LogInformation("Successfully retrieve {0} '{1}' | Method: {2}"
-                                    , response.ListResponse.Count
-                                    , typeof(TEntity).Name
-                                    , GetType().Name);
-            }
-            catch (Exception ex)
-            {
-                response.Message.Add($"Error trying to retrieve {typeof(TEntity).Name}");
-                response.Message.Add(ex.Message);
-                response.ErrorCode = StatusCodes.Status400BadRequest;
-            }
-
-            return response;
-        }
-
         public virtual async Task<TResponse> Insert<TRequest>(TRequest request)
         {
             TResponse response = new();
@@ -272,86 +238,6 @@ namespace ProjectManagement.Api.Services
                 _logger.LogInformation("Successfully delete {0} {1} | Method: {2}"
                                     , typeof(TEntity).Name
                                     , entity.Id
-                                    , GetType().Name);
-            }
-            catch (Exception ex)
-            {
-                response.Message.Add($"Error trying to delete {typeof(TEntity).Name}");
-                response.Message.Add(ex.Message);
-                response.ErrorCode = StatusCodes.Status400BadRequest;
-            }
-
-            return response;
-        }
-
-        public virtual async Task<TResponse> Delete(TEntity? entity)
-        {
-            TResponse response = new();
-
-            try
-            {
-                if (entity == null)
-                {
-                    response.Message.Add($"{typeof(TEntity).Name} not found");
-                    response.ErrorCode = StatusCodes.Status404NotFound;
-                    return response;
-                }
-
-                await _repository.Delete(entity);
-
-                TDto? dto = (TDto?)Activator.CreateInstance(typeof(TDto), entity);
-
-                ArgumentNullException.ThrowIfNull(dto);
-
-                response.ListResponse.Add(dto);
-                response.IsSuccess = true;
-
-                await AfterDelete(entity);
-
-                _logger.LogInformation("Successfully delete {0} {1} | Method: {2}"
-                                    , typeof(TEntity).Name
-                                    , entity.Id
-                                    , GetType().Name);
-            }
-            catch (Exception ex)
-            {
-                response.Message.Add($"Error trying to delete {typeof(TEntity).Name}");
-                response.Message.Add(ex.Message);
-                response.ErrorCode = StatusCodes.Status400BadRequest;
-            }
-
-            return response;
-        }
-
-        public virtual async Task<TResponse> DeleteRange(Expression<Func<TEntity, bool>> predicate)
-        {
-            TResponse response = new();
-
-            try
-            {
-                IEnumerable<TEntity>? entities = await _repository.Get(predicate);
-
-                if (entities == null)
-                {
-                    response.Message.Add($"{typeof(TEntity).Name} not found");
-                    response.ErrorCode = StatusCodes.Status404NotFound;
-                    return response;
-                }
-
-                await _repository.DeleteRange(entities);
-
-                foreach (var entity in entities)
-                {
-                    TDto? dto = (TDto?)Activator.CreateInstance(typeof(TDto), entities);
-                    ArgumentNullException.ThrowIfNull(dto);
-                    response.ListResponse.Add(dto);
-                }
-                
-                response.IsSuccess = true;
-
-                _logger.LogInformation("Successfully delete {0} {1} | Method: {2}"
-                                    , entities.Count()
-                                    , typeof(TEntity).Name
                                     , GetType().Name);
             }
             catch (Exception ex)

@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35728.132 d17.12
+VisualStudioVersion = 17.12.35728.132
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagement.Api", "ProjectManagement\ProjectManagement.Api.csproj", "{D514654B-F076-415A-B8B5-08F341828B03}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagement.Domain", "ProjectManagement.Domain\ProjectManagement.Domain.csproj", "{1DE16E72-9116-4338-BC46-2F1C29121C11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagement.Api.Test", "ProjectManagement.Api.Test\ProjectManagement.Api.Test.csproj", "{90E7A847-507A-4F97-B1CA-0B86C5CC01C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{1DE16E72-9116-4338-BC46-2F1C29121C11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DE16E72-9116-4338-BC46-2F1C29121C11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DE16E72-9116-4338-BC46-2F1C29121C11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90E7A847-507A-4F97-B1CA-0B86C5CC01C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90E7A847-507A-4F97-B1CA-0B86C5CC01C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90E7A847-507A-4F97-B1CA-0B86C5CC01C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90E7A847-507A-4F97-B1CA-0B86C5CC01C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
