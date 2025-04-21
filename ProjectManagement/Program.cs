@@ -13,6 +13,7 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ITaskHistoryService, TaskHistoryService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 builder.Services.AddMvc()
                 .AddJsonOptions(x =>

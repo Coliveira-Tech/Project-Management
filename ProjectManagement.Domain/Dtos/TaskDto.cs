@@ -15,6 +15,7 @@
             Priority = entity.Priority;
             CreatedAt = entity.CreatedAt;
             UpdatedAt = entity.UpdatedAt;
+            DueDate = entity.DueDate;
             AssignedUser = new UserDto(entity.AssignedUser);
         }
 
@@ -27,7 +28,7 @@
         public string PriorityDescription { get => Priority.ToString(); }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public ProjectDto Project { get; set; } = null!;
+        public DateTime DueDate { get; set; }
         public UserDto AssignedUser { get; set; } = null!;
     }
 }

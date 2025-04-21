@@ -22,6 +22,7 @@ namespace ProjectManagement.Domain.Entities
             Title = request.Title;
             Description = request.Description;
             DueDate = request.DueDate;
+            UpdatedAt = request.UpdatedAt;
             Status = request.Status;
             AssignedUserId = request.AssignedUserId;
         }
