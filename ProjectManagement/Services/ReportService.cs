@@ -88,8 +88,8 @@ namespace ProjectManagement.Api.Services
         public async Task<ReportResponse> GetReportByUser(ReportByUserRequest request)
         {
             ReportResponse response = new();
-            int completedOverdue = 0;
-            int dueDatePostponed = 0;
+            List<int> completedOverdueList = [];
+            List<int> dueDatePostponedList = [];
 
             try
             {
@@ -120,28 +120,31 @@ namespace ProjectManagement.Api.Services
 
                     if (taskHistory.IsSuccess)
                     {
-                        completedOverdue = taskHistory.ListResponse
+                        int completedOverdue = taskHistory.ListResponse
                                               .Where(th => th.Field == "Status"
                                                         && th.NewValue == Enums.TaskStatus.Completed.ToString()
                                                         && th.Timestamp > task.DueDate)
                                               .Count();
 
-                        dueDatePostponed = taskHistory.ListResponse
+                        int dueDatePostponed = taskHistory.ListResponse
                                               .Where(th => th.Field == "DueDate"
                                                         && DateTime.Parse(th.NewValue) > DateTime.Parse(th.OldValue))
                                               .Count();
+
+                        completedOverdueList.Add(completedOverdue);
+                        dueDatePostponedList.Add(dueDatePostponed);
                     }
                 });
 
                 ReportDto report = new()
                 {
                     TotalTasks = tasks.ListResponse.Count,
+                    CompletedOverdueTasks = completedOverdueList.Count,
+                    DueDatePostponedTasks = dueDatePostponedList.Count,
                     CompletedTasks = tasks.ListResponse.Count(t => t.Status == Enums.TaskStatus.Completed),
                     InProgressTasks = tasks.ListResponse.Count(t => t.Status == Enums.TaskStatus.InProgress),
                     NotStartedTasks = tasks.ListResponse.Count(t => t.Status == Enums.TaskStatus.Pending),
-                    OverdueTasks = tasks.ListResponse.Count(t => t.Status != Enums.TaskStatus.Completed && t.DueDate < DateTime.Now),
-                    CompletedOverdueTasks = completedOverdue,
-                    DueDatePostponedTasks = dueDatePostponed
+                    OverdueTasks = tasks.ListResponse.Count(t => t.Status != Enums.TaskStatus.Completed && t.DueDate < DateTime.Now)
                 };
 
                 response.ListResponse.Add(report);

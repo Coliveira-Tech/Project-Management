@@ -169,7 +169,7 @@ namespace ProjectManagement.Api.Test.Service
             string expectedMessage = "Error trying to insert TaskHistory";
             _repositoryMock.Setup(repo => repo.InsertRange(It.IsAny<List<TaskHistory>>()))
                 .Throws(new Exception(expectedMessage));
-            List<TaskHistoryInsertRequest> requests = new();
+            List<TaskHistoryInsertRequest> requests = [];
 
             // Act
             TaskHistoryResponse result = await _service.InsertRange(requests);
