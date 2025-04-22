@@ -39,8 +39,30 @@ Para executar os testes unitários basta acessar a pasta raiz do projeto e digit
 # Perguntas para o PO
 
 - A autenticação é feita por um serviço externo, porém temos a documentação de como é feita a chamada e de como funcionam as claims para definir as roles dos usuários? para este MVP é permitido informar no header a role e o usuário logado, porém foi feito assim somente para já deixar preparado para um identity provider.
+- Para o limite de 20 tarefas por projeto contam todas as tarefas, independente do status?
 - O limite de 20 tarefas por projeto pode mudar? (o ideal é ser um parâmetro no sistema)
 - O prazo de 30 dias para relatórios pode mudar? (o ideal é ser um parâmetro no sistema)
 - Está previsto adicionar pessoas ao projeto para que determinado projeto seja visível somente para aqueles incluídos no projeto?
 - Está previsto adição de dependência entra as tarefas? (por ex. a tarefa X esta impedida pela tarefa Y)
 - Esta prevista a funcionalidade de editar comentários?
+
+# Melhorias
+
+### Código
+
+- Implementação de cache, principalmente nos endpoints de relatórios
+- Integração com identity provider
+- Criação de uma tabela de parametrização
+- Criação de times para ser possível associar o time ao projeto
+
+### Infraestrutura
+
+- Hospedar o projeto em uma nuvem publica (Azure ou AWS), da forma que foi estruturado, o projeto esta totalmente preparado para a nuvem.
+- Criar esteira de CI/CD contemplando automaticamente cobertura de testes unitários antes de subir para a branch principal
+- Manter a api no Azure Container Registry (ou equivalente da AWS)
+
+OBS: Escrevi alguns anos atrás um tutorial "do zero à nuvem" para a criação de esteiras de CI/CD no azure e está [disponível aqui](https://karlos-oliveira.medium.com/)
+
+### Padrões
+
+Por mais que seja um MVP, fiz o possivel para seguir as melhores práticas de desenvolvimento e padrões de desenvolvimento, sendo assim, se fosse o caso do projeto crescer e ter a necessidade de escalar, seria muito fácil mudar para uma estrutura mais completa como o DDD ou até mesmo uma arquitetura hexagonal.
