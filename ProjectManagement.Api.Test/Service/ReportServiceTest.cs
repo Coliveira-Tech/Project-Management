@@ -3,13 +3,12 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using ProjectManagement.Api.Interfaces;
 using ProjectManagement.Api.Services;
-using Entities = ProjectManagement.Domain.Entities;
+using ProjectManagement.Domain.Dtos;
 using ProjectManagement.Domain.Models;
 using System.Linq.Expressions;
+using Entities = ProjectManagement.Domain.Entities;
 using Enums = ProjectManagement.Domain.Enums;
 using Tasks = System.Threading.Tasks;
-using ProjectManagement.Domain.Dtos;
-using ProjectManagement.Domain.Entities;
 
 namespace ProjectManagement.Api.Test.Service
 {

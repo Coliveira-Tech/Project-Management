@@ -19,7 +19,6 @@ namespace ProjectManagement.Domain.Dtos
         public Guid Id { get; set; }
         public string Content { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
-        public TaskDto Task { get; set; } = null!;
         public UserDto User { get; set; } = null!;
     }
 }
