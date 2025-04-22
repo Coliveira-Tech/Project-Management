@@ -1,5 +1,7 @@
 # Project Management
 
+As especificações do projeco podem ser encontradas [aqui](https://meteor-ocelot-f0d.notion.site/NET-C-5281edbec2e4480d98552e5ca0242c5b)
+
 ## Pré-requisitos
 - Docker 
 - Docker Compose
