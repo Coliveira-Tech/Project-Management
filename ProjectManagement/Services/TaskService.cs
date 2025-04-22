@@ -55,6 +55,10 @@ namespace ProjectManagement.Api.Services
 
                     return await base.Insert(request);
                 }
+
+                response.Message.AddRange(projectResponse.Message);
+                response.IsSuccess = projectResponse.IsSuccess;
+                response.ErrorCode = projectResponse.ErrorCode;
             }
             catch (Exception ex)
             {
