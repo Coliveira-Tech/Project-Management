@@ -7,13 +7,27 @@ using ProjectManagement.Api.Services;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ITaskHistoryService, TaskHistoryService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+
+const string CORSPolicy = "CORSPolicy";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: CORSPolicy,
+                      policy =>
+                      {
+
+                          policy.WithOrigins("http://localhost",
+                                             "https://localhost")
+                                .AllowAnyHeader()
+                                .AllowAnyOrigin()
+                                .AllowAnyMethod();
+                      });
+});
 
 builder.Services.AddMvc()
                 .AddJsonOptions(x =>
@@ -53,15 +67,29 @@ builder.Services.AddOpenApi(options =>
             }
         });
 
+        operation.Servers.Add(new OpenApiServer()
+        {
+            Url = "http://localhost:8080",
+            Description = "Local Http"
+        });
+
+        operation.Servers.Add(new OpenApiServer()
+        {
+            Url = "https://localhost:8081",
+            Description = "Local Https"
+        });
+
         return Task.CompletedTask;
     });
 
 });
+
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
 app.MapHealthChecks("/health");
+app.UseCors(CORSPolicy);
 
 if (app.Environment.IsDevelopment())
 {
